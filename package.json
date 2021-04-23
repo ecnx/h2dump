@@ -1,0 +1,6 @@
+{
+    "name": "h2dump",
+    "dependencies": {
+        "hpack": "*"
+    }
+}
