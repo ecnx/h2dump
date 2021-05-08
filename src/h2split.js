@@ -28,7 +28,7 @@ function extract_chunk(array, pos, directory) {
     pos += 3;
     const opcode = String.fromCharCode(parse_uint8(array, pos));
     pos++;
-    const fd = parse_uint32_be(array, pos);;
+    const fd = parse_uint32_be(array, pos);
     pos += 4;
     const sec = parse_uint32_be(array, pos);
     pos += 4;
@@ -43,13 +43,13 @@ function extract_chunk(array, pos, directory) {
         console.log('invalid chunk length');
         return -1;
     }
-    fs.appendFileSync(path.join(directory, "" + fd), array.slice(pos - 20, limit));
+    fs.appendFileSync(path.join(directory, "" + fd + '-' + opcode), array.slice(pos, limit));
     return len + 20;
 }
 
 function split_task(array, directory) {
     let pos = 0;
-    while(pos + 20 < array.length) {
+    while (pos + 20 < array.length) {
         const ret = extract_chunk(array, pos, directory);
         if (ret < 0) {
             return -1;
@@ -68,6 +68,9 @@ function startup() {
     }
     const filepath = process.argv[2];
     const directory = process.argv[3];
+    if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory);
+    }
     const array = fs.readFileSync(filepath);
     const ret = split_task(array, directory);
     if (ret < 0) {
